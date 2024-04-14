@@ -2,14 +2,18 @@ namespace ChoreographyKata;
 
 public sealed record InventoryService : IListener
 {
+    private const int DefaultCapacity = 10;
     private int _capacity;
     private readonly MessageBus _messageBus;
+
+    public InventoryService(MessageBus messageBus) 
+        : this(DefaultCapacity, messageBus)
+    { }
 
     public InventoryService(int capacity, MessageBus messageBus)
     {
         _capacity = capacity;
         _messageBus = messageBus;
-        _messageBus.Subscribe(this);
     }
 
     public int AvailableSeats() => _capacity;

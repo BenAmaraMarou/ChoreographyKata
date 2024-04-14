@@ -1,6 +1,6 @@
 namespace ChoreographyKata;
 
-public record MessageBus
+public sealed record MessageBus
 {
     private readonly List<IListener> _listeners = new();
 

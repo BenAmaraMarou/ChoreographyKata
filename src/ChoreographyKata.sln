@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoreographyKata", "ChoreographyKata\ChoreographyKata.csproj", "{CA02A2CC-0C46-4B5C-BAEA-2432DF4593E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChoreographyKata", "ChoreographyKata\ChoreographyKata.csproj", "{CA02A2CC-0C46-4B5C-BAEA-2432DF4593E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoreographyKata.Tests", "ChoreographyKata.Tests\ChoreographyKata.Tests.csproj", "{7A715733-A84C-4CE2-9A91-1BE9A11C4306}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChoreographyKata.Tests", "ChoreographyKata.Tests\ChoreographyKata.Tests.csproj", "{7A715733-A84C-4CE2-9A91-1BE9A11C4306}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoreographyKata.Functions", "ChoreographyKata.Functions\ChoreographyKata.Functions.csproj", "{E767A472-D996-4149-A0BF-AC76135D6409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7A715733-A84C-4CE2-9A91-1BE9A11C4306}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A715733-A84C-4CE2-9A91-1BE9A11C4306}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A715733-A84C-4CE2-9A91-1BE9A11C4306}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E767A472-D996-4149-A0BF-AC76135D6409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E767A472-D996-4149-A0BF-AC76135D6409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E767A472-D996-4149-A0BF-AC76135D6409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E767A472-D996-4149-A0BF-AC76135D6409}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

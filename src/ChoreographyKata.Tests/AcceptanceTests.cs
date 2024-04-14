@@ -8,10 +8,13 @@ public class AcceptanceTests
     public void SuccessfulBooking()
     {
         var messageBus = new MessageBus();
-        var inventory = new InventoryService(10, messageBus);
-        var ticketing = new TicketingService(messageBus);
-        var notification = new NotificationService(messageBus);
         var booking = new BookingService(messageBus);
+        var inventory = new InventoryService(10, messageBus);
+        var ticketing = new TicketingService();
+        var notification = new NotificationService();
+        messageBus.Subscribe(inventory);
+        messageBus.Subscribe(ticketing);
+        messageBus.Subscribe(notification);
 
         booking.Book(3);
 
@@ -22,10 +25,13 @@ public class AcceptanceTests
     public void FailingBooking()
     {
         var messageBus = new MessageBus();
-        var inventory = new InventoryService(10, messageBus);
-        var ticketing = new TicketingService(messageBus);
-        var notification = new NotificationService(messageBus);
         var booking = new BookingService(messageBus);
+        var inventory = new InventoryService(10, messageBus);
+        var ticketing = new TicketingService();
+        var notification = new NotificationService();
+        messageBus.Subscribe(inventory);
+        messageBus.Subscribe(ticketing);
+        messageBus.Subscribe(notification);
 
         booking.Book(11);
 
