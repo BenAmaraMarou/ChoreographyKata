@@ -1,6 +1,6 @@
-namespace ChoreographyKata;
+namespace ChoreographyKata.Broker;
 
-public sealed record MessageBus
+public sealed record InMemoryMessageBus : IMessageBus
 {
     private readonly List<IListener> _listeners = new();
 
@@ -9,11 +9,13 @@ public sealed record MessageBus
         _listeners.Add(listener);
     }
 
-    public void Send(TheaterEvent theaterEvent)
+    public Task SendAsync(TheaterEvent theaterEvent)
     {
         foreach (var listener in _listeners)
         {
             listener.OnMessage(theaterEvent);
         }
+
+        return Task.CompletedTask;
     }
 }

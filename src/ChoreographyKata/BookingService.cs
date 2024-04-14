@@ -1,10 +1,12 @@
+using ChoreographyKata.Broker;
+
 namespace ChoreographyKata;
 
 public sealed class BookingService
 {
-    private readonly MessageBus _messageBus;
+    private readonly IMessageBus _messageBus;
 
-    public BookingService(MessageBus messageBus)
+    public BookingService(IMessageBus messageBus)
     {
         _messageBus = messageBus;
     }
@@ -13,7 +15,7 @@ public sealed class BookingService
     {
         // validation logic goes here...
         var bookingReserved = new TheaterEvent(TheaterEvents.BookingReserved, numberOfSeats);
-        _messageBus.Send(bookingReserved);
+        _messageBus.SendAsync(bookingReserved);
         Console.WriteLine($"{bookingReserved.Name} {bookingReserved.Value}");
     }
 }

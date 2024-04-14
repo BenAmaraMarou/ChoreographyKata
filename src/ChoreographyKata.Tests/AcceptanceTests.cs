@@ -1,3 +1,4 @@
+using ChoreographyKata.Broker;
 using FluentAssertions;
 
 namespace ChoreographyKata.Tests;
@@ -7,7 +8,7 @@ public class AcceptanceTests
     [Test]
     public void SuccessfulBooking()
     {
-        var messageBus = new MessageBus();
+        var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus);
         var inventory = new InventoryService(10, messageBus);
         var ticketing = new TicketingService();
@@ -24,7 +25,7 @@ public class AcceptanceTests
     [Test]
     public void FailingBooking()
     {
-        var messageBus = new MessageBus();
+        var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus);
         var inventory = new InventoryService(10, messageBus);
         var ticketing = new TicketingService();

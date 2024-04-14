@@ -9,7 +9,7 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        FunctionServices.Register(services);
+        ServiceRegistration.Register(services);
     })
     .Build();
 

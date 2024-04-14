@@ -1,16 +1,18 @@
+using ChoreographyKata.Broker;
+
 namespace ChoreographyKata;
 
 public sealed record InventoryService : IListener
 {
     private const int DefaultCapacity = 10;
     private int _capacity;
-    private readonly MessageBus _messageBus;
+    private readonly IMessageBus _messageBus;
 
-    public InventoryService(MessageBus messageBus) 
+    public InventoryService(IMessageBus messageBus) 
         : this(DefaultCapacity, messageBus)
     { }
 
-    public InventoryService(int capacity, MessageBus messageBus)
+    public InventoryService(int capacity, IMessageBus messageBus)
     {
         _capacity = capacity;
         _messageBus = messageBus;
@@ -28,7 +30,7 @@ public sealed record InventoryService : IListener
         if (_capacity < theaterEvent.Value)
         {
             Console.WriteLine($"{TheaterEvents.CapacityExceeded} {theaterEvent.Value}");
-            _messageBus.Send(theaterEvent with { Name = TheaterEvents.CapacityExceeded });
+            _messageBus.SendAsync(theaterEvent with { Name = TheaterEvents.CapacityExceeded });
         }
         else
         {
@@ -40,6 +42,6 @@ public sealed record InventoryService : IListener
     {
         _capacity -= numberOfSeats;
         Console.WriteLine($"{TheaterEvents.CapacityReserved} {numberOfSeats}");
-        _messageBus.Send(new TheaterEvent(TheaterEvents.CapacityReserved, numberOfSeats));
+        _messageBus.SendAsync(new TheaterEvent(TheaterEvents.CapacityReserved, numberOfSeats));
     }
 }
