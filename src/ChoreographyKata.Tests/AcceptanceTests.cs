@@ -9,7 +9,8 @@ public class AcceptanceTests
     {
         var inventory = new InventoryService(10);
         var notification = new NotificationService();
-        var booking = new BookingService(new Orchestration(inventory, new TicketingService(), notification));
+        var messageBus = new MessageBus();
+        var booking = new BookingService(new Orchestration(inventory, new TicketingService(), notification), messageBus);
 
         booking.Book(3);
 
@@ -21,7 +22,8 @@ public class AcceptanceTests
     {
         var inventory = new InventoryService(10);
         var notification = new NotificationService();
-        var booking = new BookingService(new Orchestration(inventory, new TicketingService(), notification));
+        var messageBus = new MessageBus();
+        var booking = new BookingService(new Orchestration(inventory, new TicketingService(), notification), messageBus);
 
         booking.Book(11);
 
