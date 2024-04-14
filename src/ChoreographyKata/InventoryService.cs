@@ -26,14 +26,21 @@ public sealed record InventoryService : IListener
 
     public void OnMessage(TheaterEvent theaterEvent)
     {
+        if (theaterEvent.Name != TheaterEvents.BookingReserved)
+        {
+            return;
+        }
+
         if (_capacity < theaterEvent.Value)
         {
             Console.WriteLine($"CapacityExceeded {theaterEvent.Value}");
+            _messageBus.Send(theaterEvent with { Name = "CapacityExceeded" });
         }
         else
         {
             _capacity -= theaterEvent.Value;
             Console.WriteLine($"CapacityReserved {theaterEvent.Value}");
+            _messageBus.Send(theaterEvent with { Name = "CapacityReserved" });
         }
     }
 }
