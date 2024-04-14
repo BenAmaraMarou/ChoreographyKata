@@ -15,7 +15,7 @@ public class AcceptanceTests
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logger, _correlationIdFactory);
-        var inventory = new InventoryService(10, messageBus, _logger);
+        var inventory = new InventoryService(messageBus, _logger, 10);
         var ticketing = new TicketingService(_logger);
         var notification = new NotificationService(_logger);
         messageBus.Subscribe(inventory);
@@ -32,7 +32,7 @@ public class AcceptanceTests
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logger, _correlationIdFactory);
-        var inventory = new InventoryService(10, messageBus, _logger);
+        var inventory = new InventoryService(messageBus, _logger, 10);
         var ticketing = new TicketingService(_logger);
         var notification = new NotificationService(_logger);
         messageBus.Subscribe(inventory);

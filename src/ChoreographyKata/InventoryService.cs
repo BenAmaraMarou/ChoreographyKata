@@ -4,20 +4,15 @@ namespace ChoreographyKata;
 
 public sealed record InventoryService : IListener
 {
-    private const int DefaultCapacity = 10;
-    private int _capacity;
     private readonly IMessageBus _messageBus;
     private readonly ILogger _logger;
+    private int _capacity;
 
-    public InventoryService(IMessageBus messageBus, ILogger logger) 
-        : this(DefaultCapacity, messageBus, logger)
-    { }
-
-    public InventoryService(int capacity, IMessageBus messageBus, ILogger logger)
+    public InventoryService(IMessageBus messageBus, ILogger logger, int capacity)
     {
-        _capacity = capacity;
         _messageBus = messageBus;
         _logger = logger;
+        _capacity = capacity;
     }
 
     public int AvailableSeats() => _capacity;
