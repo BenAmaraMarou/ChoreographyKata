@@ -27,9 +27,15 @@ public sealed class ValidationRule
         _timeout = TimeSpan.FromMinutes(options.Value.TimeoutMinutes);
     }
 
-    internal bool AreValid(IDictionary<TheaterEvent, DateTime> theaterEvents, DateTime executionDate) =>
-        AreAllRequiredEventsPresent(theaterEvents.Keys) &&
-        AreEventsBeforeTimeOut(theaterEvents.Values, executionDate);
+    internal bool AreValid(IDictionary<TheaterEvent, DateTime> theaterEvents, DateTime executionDate)
+    {
+        if (AreAllRequiredEventsPresent(theaterEvents.Keys))
+        {
+            return true;
+        }
+
+        return AreEventsBeforeTimeOut(theaterEvents.Values, executionDate);
+    }
 
     private static bool AreAllRequiredEventsPresent(IEnumerable<TheaterEvent> theaterEvents) => 
         RequiredEventsByGroup.Any(required => AreEqual(required, theaterEvents.Select(t => t.Name)));

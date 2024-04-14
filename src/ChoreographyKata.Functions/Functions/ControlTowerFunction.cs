@@ -21,6 +21,6 @@ public sealed class ControlTowerFunction
     }
 
     [Function(nameof(Inspect))]
-    public async Task Inspect([TimerTrigger("0 */2 * * * *")] TimerInfo myTimer) =>
+    public async Task Inspect([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer) =>
         await _controlTowerService.InspectErrorsAsync();
 }
