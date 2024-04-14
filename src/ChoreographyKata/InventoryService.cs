@@ -1,17 +1,18 @@
 using ChoreographyKata.Broker;
+using ChoreographyKata.Logging;
 
 namespace ChoreographyKata;
 
 public sealed record InventoryService : IListener
 {
     private readonly IMessageBus _messageBus;
-    private readonly ILogger _logger;
+    private readonly ILogging _logging;
     private int _capacity;
 
-    public InventoryService(IMessageBus messageBus, ILogger logger, int capacity)
+    public InventoryService(IMessageBus messageBus, ILogging logging, int capacity)
     {
         _messageBus = messageBus;
-        _logger = logger;
+        _logging = logging;
         _capacity = capacity;
     }
 
@@ -41,12 +42,12 @@ public sealed record InventoryService : IListener
     {
         var capacityReserved = theaterEvent with{ Name = TheaterEvents.CapacityReserved};
         _messageBus.SendAsync(capacityReserved);
-        _logger.Log(capacityReserved);
+        _logging.Log(capacityReserved);
     }
     private void CapacityExceeded(TheaterEvent theaterEvent)
     {
         var capacityExceeded = theaterEvent with { Name = TheaterEvents.CapacityExceeded };
         _messageBus.SendAsync(capacityExceeded);
-        _logger.Log(capacityExceeded);
+        _logging.Log(capacityExceeded);
     }
 }

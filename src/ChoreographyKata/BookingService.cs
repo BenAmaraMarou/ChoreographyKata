@@ -1,18 +1,19 @@
 using ChoreographyKata.Broker;
 using ChoreographyKata.CorrelationId;
+using ChoreographyKata.Logging;
 
 namespace ChoreographyKata;
 
 public sealed class BookingService
 {
     private readonly IMessageBus _messageBus;
-    private readonly ILogger _logger;
+    private readonly ILogging _logging;
     private readonly ICorrelationIdFactory _correlationIdFactory;
 
-    public BookingService(IMessageBus messageBus, ILogger logger, ICorrelationIdFactory correlationIdFactory)
+    public BookingService(IMessageBus messageBus, ILogging logging, ICorrelationIdFactory correlationIdFactory)
     {
         _messageBus = messageBus;
-        _logger = logger;
+        _logging = logging;
         _correlationIdFactory = correlationIdFactory;
     }
 
@@ -29,6 +30,6 @@ public sealed class BookingService
                 TheaterEvents.BookingReserved, 
                 numberOfSeats);
         _messageBus.SendAsync(bookingReserved);
-        _logger.Log(bookingReserved);
+        _logging.Log(bookingReserved);
     }
 }

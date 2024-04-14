@@ -1,6 +1,6 @@
-namespace ChoreographyKata;
+namespace ChoreographyKata.Logging;
 
-public interface ILogger
+public interface ILogging
 {
     void Log(TheaterEvent theaterEvent);
 

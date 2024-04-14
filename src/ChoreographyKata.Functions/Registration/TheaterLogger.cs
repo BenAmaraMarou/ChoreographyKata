@@ -1,8 +1,9 @@
+using ChoreographyKata.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace ChoreographyKata.Functions.Registration;
 
-public sealed class TheaterLogger : ILogger
+public sealed class TheaterLogger : ILogging
 {
     private readonly ILogger<TheaterLogger> _logger;
 
@@ -12,7 +13,7 @@ public sealed class TheaterLogger : ILogger
     }
 
     public void Log(TheaterEvent theaterEvent) => 
-        _logger.LogInformation("{event} {value}", theaterEvent.Name, theaterEvent.Value);
+        _logger.LogInformation(theaterEvent.ToString());
 
     public void Log(string message) => 
         _logger.LogInformation(message);

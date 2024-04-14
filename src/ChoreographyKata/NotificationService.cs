@@ -1,12 +1,14 @@
+using ChoreographyKata.Logging;
+
 namespace ChoreographyKata;
 
 public sealed class NotificationService : IListener
 {
-    private readonly ILogger _logger;
+    private readonly ILogging _logging;
 
-    public NotificationService(ILogger logger)
+    public NotificationService(ILogging logging)
     {
-        _logger = logger;
+        _logging = logging;
     }
 
     public void OnMessage(TheaterEvent theaterEvent)
@@ -21,6 +23,6 @@ public sealed class NotificationService : IListener
 
     private void NotifyFailure(int numberOfSeats)
     {
-        _logger.Log($"FailureNotified {numberOfSeats}");
+        _logging.Log($"FailureNotified {numberOfSeats}");
     }
 }

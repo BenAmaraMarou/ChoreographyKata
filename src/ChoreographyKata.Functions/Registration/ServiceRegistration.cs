@@ -1,4 +1,5 @@
 using ChoreographyKata.Broker;
+using ChoreographyKata.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,14 +11,14 @@ public static class ServiceRegistration
 
     public static void Register(IServiceCollection services)
     {
-        services.AddTransient<ILogger, TheaterLogger>();
+        services.AddTransient<ILogging, TheaterLogger>();
         services.AddSingleton<IMessageBus, EventGrid>();
         services.AddTransient<BookingService>();
         services.AddSingleton<IListener>(p =>
         {
             var capacity = p.GetRequiredService<IConfiguration>().GetValue<int>(InventoryConfigSection);
             var bus = p.GetRequiredService<IMessageBus>();
-            var logger = p.GetRequiredService<ILogger>();
+            var logger = p.GetRequiredService<ILogging>();
 
             return new InventoryService(bus, logger, capacity);
         });
