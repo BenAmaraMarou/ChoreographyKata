@@ -14,8 +14,8 @@ public sealed class BookingService
     public void Book(int numberOfSeats)
     {
         // validation logic goes here...
-        _messageBus.Send(new TheaterEvent("BookingRequested", numberOfSeats));
-        Console.WriteLine($"{numberOfSeats} booking requested");
+        _messageBus.Send(new TheaterEvent(TheaterEvents.BookingReserved, numberOfSeats));
+        Console.WriteLine($"{numberOfSeats} {TheaterEvents.BookingReserved}");
         _orchestration.Launch(numberOfSeats);
     }
 }

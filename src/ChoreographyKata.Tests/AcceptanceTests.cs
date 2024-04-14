@@ -7,9 +7,9 @@ public class AcceptanceTests
     [Test]
     public void SuccessfulBooking()
     {
-        var inventory = new InventoryService(10);
-        var notification = new NotificationService();
         var messageBus = new MessageBus();
+        var inventory = new InventoryService(10, messageBus);
+        var notification = new NotificationService();
         var booking = new BookingService(new Orchestration(inventory, new TicketingService(), notification), messageBus);
 
         booking.Book(3);
@@ -20,9 +20,9 @@ public class AcceptanceTests
     [Test]
     public void FailingBooking()
     {
-        var inventory = new InventoryService(10);
-        var notification = new NotificationService();
         var messageBus = new MessageBus();
+        var inventory = new InventoryService(10, messageBus);
+        var notification = new NotificationService();
         var booking = new BookingService(new Orchestration(inventory, new TicketingService(), notification), messageBus);
 
         booking.Book(11);
