@@ -2,7 +2,7 @@ namespace ChoreographyKata.ControlTower.InspectedTheaterEvents;
 
 public interface ITheaterEvents
 {
-    void Add(TheaterEvent theaterEvent, DateTime dateTime);
+    Task AddAsync(TheaterEvent theaterEvent, DateTime dateTime);
 
-    IReadOnlyDictionary<TheaterEvent, DateTime> Get();
+    Task<IReadOnlyDictionary<TheaterEvent, DateTime>> GetAsync();
 }

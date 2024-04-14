@@ -2,5 +2,5 @@ namespace ChoreographyKata;
 
 public interface IListener
 {
-    void OnMessage(TheaterEvent theaterEvent);
+    Task OnMessage(TheaterEvent theaterEvent);
 }

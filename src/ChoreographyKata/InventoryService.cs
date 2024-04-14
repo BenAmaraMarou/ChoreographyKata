@@ -18,11 +18,11 @@ public sealed record InventoryService : IListener
 
     public int AvailableSeats() => _capacity;
 
-    public void OnMessage(TheaterEvent theaterEvent)
+    public Task OnMessage(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.BookingReserved)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         if (_capacity < theaterEvent.Value)
@@ -34,6 +34,8 @@ public sealed record InventoryService : IListener
             DecrementCapacity(theaterEvent.Value);
             CapacityReserved(theaterEvent);
         }
+
+        return Task.CompletedTask;
     }
 
     private void DecrementCapacity(int numberOfSeats) => _capacity -= numberOfSeats;

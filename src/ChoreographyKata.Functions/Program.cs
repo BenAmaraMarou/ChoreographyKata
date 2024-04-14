@@ -1,10 +1,16 @@
 using ChoreographyKata.Functions.Registration;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
+    .ConfigureAppConfiguration(builder =>
+    {
+        builder.AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
+        builder.AddEnvironmentVariables();
+    })
     .ConfigureServices(services =>
     {
         services.AddApplicationInsightsTelemetryWorkerService();

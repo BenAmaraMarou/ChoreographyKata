@@ -11,14 +11,16 @@ public sealed class NotificationService : IListener
         _logging = logging;
     }
 
-    public void OnMessage(TheaterEvent theaterEvent)
+    public Task OnMessage(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.CapacityExceeded)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         NotifyFailure(theaterEvent.Value);
+
+        return Task.CompletedTask;
     }
 
     private void NotifyFailure(int numberOfSeats)

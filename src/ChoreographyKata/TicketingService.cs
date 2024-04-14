@@ -11,14 +11,16 @@ public sealed class TicketingService : IListener
         _logging = logging;
     }
 
-    public void OnMessage(TheaterEvent theaterEvent)
+    public Task OnMessage(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.CapacityReserved)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         PrintTicket(theaterEvent.Value);
+
+        return Task.CompletedTask;
     }
 
     private void PrintTicket(int numberOfSeats)

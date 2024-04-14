@@ -21,6 +21,6 @@ public sealed class BookingFunction
         int numberOfSeats)
     {
         _logger.LogInformation("{functionName} {numberOfSeats} called.", nameof(BookSeats), numberOfSeats);
-        _bookingService.Book(numberOfSeats);
+        _bookingService.BookAsync(numberOfSeats);
     }
 }

@@ -30,7 +30,7 @@ public class AcceptanceTests
     }
 
     [Test]
-    public void SuccessfulBooking()
+    public async Task SuccessfulBooking()
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
@@ -41,13 +41,13 @@ public class AcceptanceTests
         messageBus.Subscribe(ticketing);
         messageBus.Subscribe(notification);
 
-        booking.Book(3);
+        await booking.BookAsync(3);
 
         inventory.AvailableSeats().Should().Be(7);
     }
 
     [Test]
-    public void FailingBooking()
+    public async Task FailingBooking()
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
@@ -58,13 +58,13 @@ public class AcceptanceTests
         messageBus.Subscribe(ticketing);
         messageBus.Subscribe(notification);
 
-        booking.Book(11);
+        await booking.BookAsync(11);
 
         inventory.AvailableSeats().Should().Be(10);
     }
     
     [Test]
-    public void SuccessfulControlTowerInspection()
+    public async Task SuccessfulControlTowerInspection()
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
@@ -78,21 +78,21 @@ public class AcceptanceTests
         messageBus.Subscribe(controlTower);
         _calendar.Now().Returns(Date1);
 
-        booking.Book(3);
-        booking.Book(11);
+        await booking.BookAsync(3);
+        await booking.BookAsync(11);
 
-        controlTower.CapturedEvents().Should().BeEquivalentTo(new[]
+        (await controlTower.CapturedEventsAsync()).Should().BeEquivalentTo(new[]
         {
             new TheaterEvent(CorrelationId1, TheaterEvents.BookingReserved, 3),
             new TheaterEvent(CorrelationId1, TheaterEvents.CapacityReserved, 3),
             new TheaterEvent(CorrelationId2, TheaterEvents.BookingReserved, 11),
             new TheaterEvent(CorrelationId2, TheaterEvents.CapacityExceeded, 11)
         });
-        controlTower.GetKoCorrelationIds().Should().BeEmpty();
+        (await controlTower.GetKoCorrelationIdsAsync()).Should().BeEmpty();
     }
     
     [Test]
-    public void FailingControlTowerInspection()
+    public async Task FailingControlTowerInspection()
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
@@ -106,14 +106,14 @@ public class AcceptanceTests
         messageBus.Subscribe(controlTower);
         _calendar.Now().Returns(Date1);
 
-        booking.Book(3);
+        await booking.BookAsync(3);
 
         _calendar.Now().Returns(Date2);
-        controlTower.CapturedEvents().Should().BeEquivalentTo(new[]
+        (await controlTower.CapturedEventsAsync()).Should().BeEquivalentTo(new[]
         {
             new TheaterEvent(CorrelationId1, TheaterEvents.BookingReserved, 3),
         });
-        controlTower.GetKoCorrelationIds().Should().BeEquivalentTo(new[]
+        (await controlTower.GetKoCorrelationIdsAsync()).Should().BeEquivalentTo(new[]
         {
             CorrelationId1
         });

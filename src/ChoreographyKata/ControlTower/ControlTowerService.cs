@@ -22,22 +22,22 @@ public sealed class ControlTowerService : IListener
         _validationRule = validationRule;
     }
 
-    public void OnMessage(TheaterEvent theaterEvent)
+    public async Task OnMessage(TheaterEvent theaterEvent)
     {
         _logging.Log($"{nameof(ControlTowerService)} captured: {theaterEvent}.");
-        _theaterEvents.Add(theaterEvent, _calendar.Now());
+        await _theaterEvents.AddAsync(theaterEvent, _calendar.Now());
     }
 
-    public IEnumerable<TheaterEvent> CapturedEvents() => _theaterEvents.Get().Keys;
+    public async Task<IEnumerable<TheaterEvent>> CapturedEventsAsync() => (await _theaterEvents.GetAsync()).Keys;
 
     public void InspectErrors()
     {
-        var koCorrelationIds = GetKoCorrelationIds();
+        var koCorrelationIds = GetKoCorrelationIdsAsync();
         _logging.Log($"KO Correlation Ids: [{string.Join(Separator, koCorrelationIds)}");
     }
 
-    public IEnumerable<Guid> GetKoCorrelationIds() =>
-        _theaterEvents.Get()
+    public async Task<IEnumerable<Guid>> GetKoCorrelationIdsAsync() =>
+        (await _theaterEvents.GetAsync())
             .GroupBy(t => t.Key.CorrelationId)
             .Where(eventsByCorrelationId => !_validationRule.AreValid(eventsByCorrelationId.ToDictionary(g => g.Key, g => g.Value), _calendar.Now()))
             .Select(eventsByCorrelationId => eventsByCorrelationId.Key);

@@ -5,7 +5,9 @@ using ChoreographyKata.ControlTower;
 using ChoreographyKata.ControlTower.Configuration;
 using ChoreographyKata.ControlTower.InspectedTheaterEvents;
 using ChoreographyKata.CorrelationId;
+using ChoreographyKata.Database;
 using ChoreographyKata.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,9 +16,11 @@ namespace ChoreographyKata.Functions.Registration;
 public static class ServiceRegistration
 {
     private const string InventoryConfigSection = "InventoryCapacity";
+    private const string DatabaseConnectionStringSection = "ChoreographyKataDatabase";
 
     public static void Register(IServiceCollection services)
     {
+        services.AddDbContextFactory<ChoreographyKataDbContext>(ConfigureDb);
         services.AddTransient<ILogging, TheaterLogger>();
         services.AddTransient<ICalendar, LocalCalendar>();
         services.AddTransient<ICorrelationIdFactory, CorrelationIdFactory>();
@@ -33,9 +37,16 @@ public static class ServiceRegistration
         });
         services.AddTransient<IListener, TicketingService>();
         services.AddTransient<IListener, NotificationService>();
-        services.AddTransient<ITheaterEvents, InMemoryTheaterEvents>();
+        services.AddTransient<ITheaterEvents, DbTheaterEvents>();
         services.AddConfiguration<ControlTowerConfiguration>(ControlTowerConfiguration.SectionKey);
         services.AddTransient<ValidationRule>();
         services.AddTransient<ControlTowerService>();
+    }
+
+    private static void ConfigureDb(IServiceProvider provider, DbContextOptionsBuilder dbContextBuilder)
+    {
+        var configuration = provider.GetRequiredService<IConfiguration>();
+        var connectionString = configuration.GetConnectionString(DatabaseConnectionStringSection);
+        dbContextBuilder.UseSqlServer(connectionString);
     }
 }

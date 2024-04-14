@@ -4,8 +4,8 @@ public sealed record InMemoryTheaterEvents : ITheaterEvents
 {
     private readonly Dictionary<TheaterEvent, DateTime> _events = new();
 
-    public void Add(TheaterEvent theaterEvent, DateTime dateTime) => 
-        _events.TryAdd(theaterEvent, dateTime);
+    public Task AddAsync(TheaterEvent theaterEvent, DateTime dateTime) => 
+       Task.FromResult(_events.TryAdd(theaterEvent, dateTime));
 
-    public IReadOnlyDictionary<TheaterEvent, DateTime> Get() => _events;
+    public Task<IReadOnlyDictionary<TheaterEvent, DateTime>> GetAsync() => Task.FromResult<IReadOnlyDictionary<TheaterEvent, DateTime>>(_events);
 }
