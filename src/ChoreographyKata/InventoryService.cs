@@ -31,22 +31,27 @@ public sealed record InventoryService : IListener
 
         if (_capacity < theaterEvent.Value)
         {
-            var capacityExceeded = theaterEvent with { Name = TheaterEvents.CapacityExceeded };
-            _messageBus.SendAsync(capacityExceeded);
-            _logger.Log(capacityExceeded);
+            CapacityExceeded(theaterEvent);
         }
         else
         {
             DecrementCapacity(theaterEvent.Value);
+            CapacityReserved(theaterEvent);
         }
     }
 
-    private void DecrementCapacity(int numberOfSeats)
-    {
-        _capacity -= numberOfSeats;
+    private void DecrementCapacity(int numberOfSeats) => _capacity -= numberOfSeats;
 
-        var capacityReserved = new TheaterEvent(TheaterEvents.CapacityReserved, numberOfSeats);
+    private void CapacityReserved(TheaterEvent theaterEvent)
+    {
+        var capacityReserved = theaterEvent with{ Name = TheaterEvents.CapacityReserved};
         _messageBus.SendAsync(capacityReserved);
         _logger.Log(capacityReserved);
+    }
+    private void CapacityExceeded(TheaterEvent theaterEvent)
+    {
+        var capacityExceeded = theaterEvent with { Name = TheaterEvents.CapacityExceeded };
+        _messageBus.SendAsync(capacityExceeded);
+        _logger.Log(capacityExceeded);
     }
 }
