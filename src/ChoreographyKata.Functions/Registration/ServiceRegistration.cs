@@ -8,6 +8,7 @@ public static class ServiceRegistration
 {
     public static void Register(IServiceCollection services)
     {
+        services.AddTransient<ILogger, TheaterLogger>();
         services.AddSingleton<IMessageBus, EventGrid>();
         services.AddTransient<BookingService>();
         services.AddSingleton<IListener, InventoryService>();

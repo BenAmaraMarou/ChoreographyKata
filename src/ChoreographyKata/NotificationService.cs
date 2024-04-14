@@ -2,6 +2,13 @@ namespace ChoreographyKata;
 
 public sealed class NotificationService : IListener
 {
+    private readonly ILogger _logger;
+
+    public NotificationService(ILogger logger)
+    {
+        _logger = logger;
+    }
+
     public void OnMessage(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.CapacityExceeded)
@@ -12,8 +19,8 @@ public sealed class NotificationService : IListener
         NotifyFailure(theaterEvent.Value);
     }
 
-    private static void NotifyFailure(int numberOfSeats)
+    private void NotifyFailure(int numberOfSeats)
     {
-        Console.WriteLine($"Notification sent {numberOfSeats}");
+        _logger.Log($"FailureNotified {numberOfSeats}");
     }
 }

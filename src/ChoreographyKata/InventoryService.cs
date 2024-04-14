@@ -7,15 +7,17 @@ public sealed record InventoryService : IListener
     private const int DefaultCapacity = 10;
     private int _capacity;
     private readonly IMessageBus _messageBus;
+    private readonly ILogger _logger;
 
-    public InventoryService(IMessageBus messageBus) 
-        : this(DefaultCapacity, messageBus)
+    public InventoryService(IMessageBus messageBus, ILogger logger) 
+        : this(DefaultCapacity, messageBus, logger)
     { }
 
-    public InventoryService(int capacity, IMessageBus messageBus)
+    public InventoryService(int capacity, IMessageBus messageBus, ILogger logger)
     {
         _capacity = capacity;
         _messageBus = messageBus;
+        _logger = logger;
     }
 
     public int AvailableSeats() => _capacity;
@@ -29,8 +31,9 @@ public sealed record InventoryService : IListener
 
         if (_capacity < theaterEvent.Value)
         {
-            Console.WriteLine($"{TheaterEvents.CapacityExceeded} {theaterEvent.Value}");
-            _messageBus.SendAsync(theaterEvent with { Name = TheaterEvents.CapacityExceeded });
+            var capacityExceeded = theaterEvent with { Name = TheaterEvents.CapacityExceeded };
+            _messageBus.SendAsync(capacityExceeded);
+            _logger.Log(capacityExceeded);
         }
         else
         {
@@ -41,7 +44,9 @@ public sealed record InventoryService : IListener
     private void DecrementCapacity(int numberOfSeats)
     {
         _capacity -= numberOfSeats;
-        Console.WriteLine($"{TheaterEvents.CapacityReserved} {numberOfSeats}");
-        _messageBus.SendAsync(new TheaterEvent(TheaterEvents.CapacityReserved, numberOfSeats));
+
+        var capacityReserved = new TheaterEvent(TheaterEvents.CapacityReserved, numberOfSeats);
+        _messageBus.SendAsync(capacityReserved);
+        _logger.Log(capacityReserved);
     }
 }

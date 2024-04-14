@@ -5,10 +5,12 @@ namespace ChoreographyKata;
 public sealed class BookingService
 {
     private readonly IMessageBus _messageBus;
+    private readonly ILogger _logger;
 
-    public BookingService(IMessageBus messageBus)
+    public BookingService(IMessageBus messageBus, ILogger logger)
     {
         _messageBus = messageBus;
+        _logger = logger;
     }
 
     public void Book(int numberOfSeats)
@@ -16,6 +18,6 @@ public sealed class BookingService
         // validation logic goes here...
         var bookingReserved = new TheaterEvent(TheaterEvents.BookingReserved, numberOfSeats);
         _messageBus.SendAsync(bookingReserved);
-        Console.WriteLine($"{bookingReserved.Name} {bookingReserved.Value}");
+        _logger.Log(bookingReserved);
     }
 }

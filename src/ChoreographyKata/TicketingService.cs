@@ -2,6 +2,13 @@ namespace ChoreographyKata;
 
 public sealed class TicketingService : IListener
 {
+    private readonly ILogger _logger;
+
+    public TicketingService(ILogger logger)
+    {
+        _logger = logger;
+    }
+
     public void OnMessage(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.CapacityReserved)
@@ -12,8 +19,8 @@ public sealed class TicketingService : IListener
         PrintTicket(theaterEvent.Value);
     }
 
-    private static void PrintTicket(int numberOfSeats)
+    private void PrintTicket(int numberOfSeats)
     {
-        Console.WriteLine($"TicketPrinted {numberOfSeats}");
+        _logger.Log($"TicketPrinted {numberOfSeats}");
     }
 }
