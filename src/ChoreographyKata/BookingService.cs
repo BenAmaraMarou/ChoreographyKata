@@ -2,12 +2,10 @@ namespace ChoreographyKata;
 
 public sealed class BookingService
 {
-    private readonly Orchestration _orchestration;
     private readonly MessageBus _messageBus;
 
-    public BookingService(Orchestration orchestration, MessageBus messageBus)
+    public BookingService(MessageBus messageBus)
     {
-        _orchestration = orchestration;
         _messageBus = messageBus;
     }
 
@@ -16,6 +14,5 @@ public sealed class BookingService
         // validation logic goes here...
         _messageBus.Send(new TheaterEvent(TheaterEvents.BookingReserved, numberOfSeats));
         Console.WriteLine($"{numberOfSeats} {TheaterEvents.BookingReserved}");
-        _orchestration.Launch(numberOfSeats);
     }
 }
