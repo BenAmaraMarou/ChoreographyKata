@@ -10,11 +10,6 @@ public sealed class TicketingService : IListener
         _messageBus.Subscribe(this);
     }
 
-    public void PrintTicket(int numberOfSeats)
-    {
-        Console.WriteLine($"TicketPrinted {numberOfSeats}");
-    }
-
     public void OnMessage(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.CapacityReserved)
@@ -23,5 +18,10 @@ public sealed class TicketingService : IListener
         }
 
         PrintTicket(theaterEvent.Value);
+    }
+
+    private static void PrintTicket(int numberOfSeats)
+    {
+        Console.WriteLine($"TicketPrinted {numberOfSeats}");
     }
 }

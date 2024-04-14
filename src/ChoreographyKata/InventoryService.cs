@@ -12,16 +12,6 @@ public sealed record InventoryService : IListener
         _messageBus.Subscribe(this);
     }
 
-    public bool DecrementCapacity(int numberOfSeats)
-    {
-        if (_capacity < numberOfSeats)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public int AvailableSeats() => _capacity;
 
     public void OnMessage(TheaterEvent theaterEvent)
@@ -33,14 +23,19 @@ public sealed record InventoryService : IListener
 
         if (_capacity < theaterEvent.Value)
         {
-            Console.WriteLine($"CapacityExceeded {theaterEvent.Value}");
-            _messageBus.Send(theaterEvent with { Name = "CapacityExceeded" });
+            Console.WriteLine($"{TheaterEvents.CapacityExceeded} {theaterEvent.Value}");
+            _messageBus.Send(theaterEvent with { Name = TheaterEvents.CapacityExceeded });
         }
         else
         {
-            _capacity -= theaterEvent.Value;
-            Console.WriteLine($"CapacityReserved {theaterEvent.Value}");
-            _messageBus.Send(theaterEvent with { Name = "CapacityReserved" });
+            DecrementCapacity(theaterEvent.Value);
         }
+    }
+
+    private void DecrementCapacity(int numberOfSeats)
+    {
+        _capacity -= numberOfSeats;
+        Console.WriteLine($"{TheaterEvents.CapacityReserved} {numberOfSeats}");
+        _messageBus.Send(new TheaterEvent(TheaterEvents.CapacityReserved, numberOfSeats));
     }
 }
