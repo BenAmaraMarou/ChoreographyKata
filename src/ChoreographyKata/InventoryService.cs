@@ -19,39 +19,50 @@ public sealed record InventoryService : IListener
 
     public int AvailableSeats() => _capacity;
 
-    public Task OnMessageAsync(TheaterEvent theaterEvent)
+    public Task OnMessageAsync(DomainEvent domainEvent)
     {
-        if (theaterEvent.Name != TheaterEvents.BookingReserved)
+        if (domainEvent.Name == DomainEventCatalog.BookingRequested)
         {
-            return Task.CompletedTask;
-        }
-
-        if (_capacity < theaterEvent.Value)
-        {
-            CapacityExceeded(theaterEvent);
-        }
-        else
-        {
-            DecrementCapacity(theaterEvent.Value);
-            CapacityReserved(theaterEvent);
+            ReserveInventory(domainEvent);
         }
 
         return Task.CompletedTask;
     }
 
-    private void DecrementCapacity(int numberOfSeats) => _capacity -= numberOfSeats;
-
-    private void CapacityReserved(TheaterEvent theaterEvent)
+    private void ReserveInventory(DomainEvent domainEvent)
     {
-        var capacityReserved = theaterEvent with{ Name = TheaterEvents.CapacityReserved};
-        _messageBus.SendAsync(capacityReserved);
-        _logging.Log(capacityReserved);
+        if (_capacity >= domainEvent.Value)
+        {
+            DecrementCapacity(domainEvent);
+            PublishInventoryUpdated(domainEvent);
+            PublishInventoryReserved(domainEvent);
+        }
+        else
+        {
+            PublishCapacityExceeded(domainEvent);
+        }
     }
 
-    private void CapacityExceeded(TheaterEvent theaterEvent)
+    private void DecrementCapacity(DomainEvent domainEvent) => 
+        _capacity -= domainEvent.Value;
+
+    private void PublishInventoryReserved(DomainEvent domainEvent)
     {
-        var capacityExceeded = theaterEvent with { Name = TheaterEvents.CapacityExceeded };
-        _messageBus.SendAsync(capacityExceeded);
+        var inventoryReserved = domainEvent with { Name = DomainEventCatalog.InventoryReserved };
+        _messageBus.Publish(inventoryReserved);
+        _logging.Log(inventoryReserved);
+    }
+
+    private void PublishInventoryUpdated(DomainEvent domainEvent)
+    {
+        var inventoryUpdated = domainEvent with { Name = DomainEventCatalog.InventoryUpdated };
+        _messageBus.Publish(inventoryUpdated);
+        _logging.Log(inventoryUpdated);
+    }
+    private void PublishCapacityExceeded(DomainEvent domainEvent)
+    {
+        var capacityExceeded = domainEvent with { Name = DomainEventCatalog.CapacityExceeded };
+        _messageBus.Publish(capacityExceeded);
         _logging.Log(capacityExceeded);
     }
 }

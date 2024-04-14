@@ -14,9 +14,11 @@ public sealed class InventoryFunction
         _inventoryService = inventoryService;
     }
 
-    [Function(nameof(DecreaseCapacity))]
-    public async Task DecreaseCapacity([EventGridTrigger] CloudEvent cloudEvent)
+    [Function(nameof(ReserveInventory))]
+    public async Task ReserveInventory([EventGridTrigger] CloudEvent cloudEvent)
     {
-        await _inventoryService.OnMessageAsync(cloudEvent.Data!.ToObjectFromJson<TheaterEvent>());
+        var domainEvent = cloudEvent.Data!.ToObjectFromJson<DomainEvent>();
+
+        await _inventoryService.OnMessageAsync(domainEvent);
     }
 }

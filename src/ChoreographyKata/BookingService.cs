@@ -17,7 +17,7 @@ public sealed class BookingService
         _correlationIdFactory = correlationIdFactory;
     }
 
-    public async Task BookAsync(int numberOfSeats)
+    public async Task RequestBookingAsync(int numberOfSeats)
     {
         // validation logic goes here...
         if (numberOfSeats <= 0)
@@ -26,10 +26,12 @@ public sealed class BookingService
         }
 
         var bookingReserved =
-            new TheaterEvent(_correlationIdFactory.New(), 
-                TheaterEvents.BookingReserved, 
+            new DomainEvent(_correlationIdFactory.New(), 
+                DomainEventCatalog.BookingRequested, 
                 numberOfSeats);
-        await _messageBus.SendAsync(bookingReserved);
+
+        await _messageBus.Publish(bookingReserved);
+
         _logging.Log(bookingReserved);
     }
 }

@@ -1,6 +1,5 @@
 using Azure.Messaging;
 using ChoreographyKata.ControlTower;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
 
 namespace ChoreographyKata.Functions.Functions;
@@ -17,10 +16,12 @@ public sealed class ControlTowerFunction
     [Function(nameof(Capture))]
     public async Task Capture([EventGridTrigger] CloudEvent cloudEvent)
     {
-        await _controlTowerService.OnMessageAsync(cloudEvent.Data!.ToObjectFromJson<TheaterEvent>());
+        var domainEvent = cloudEvent.Data!.ToObjectFromJson<DomainEvent>();
+
+        await _controlTowerService.OnMessageAsync(domainEvent);
     }
 
     [Function(nameof(Inspect))]
-    public async Task Inspect([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer) =>
+    public async Task Inspect([TimerTrigger("0 */2 * * * *")] TimerInfo myTimer) =>
         await _controlTowerService.InspectErrorsAsync();
 }

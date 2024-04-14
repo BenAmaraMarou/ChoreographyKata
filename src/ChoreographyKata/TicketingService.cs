@@ -11,14 +11,12 @@ public sealed class TicketingService : IListener
         _logging = logging;
     }
 
-    public Task OnMessageAsync(TheaterEvent theaterEvent)
+    public Task OnMessageAsync(DomainEvent domainEvent)
     {
-        if (theaterEvent.Name != TheaterEvents.CapacityReserved)
+        if (domainEvent.Name == DomainEventCatalog.InventoryReserved)
         {
-            return Task.CompletedTask;
+            PrintTicket(domainEvent.Value);
         }
-
-        PrintTicket(theaterEvent.Value);
 
         return Task.CompletedTask;
     }

@@ -3,7 +3,7 @@ using ChoreographyKata.Broker.Configuration;
 using ChoreographyKata.Calendar;
 using ChoreographyKata.ControlTower;
 using ChoreographyKata.ControlTower.Configuration;
-using ChoreographyKata.ControlTower.InspectedTheaterEvents;
+using ChoreographyKata.ControlTower.EventLog;
 using ChoreographyKata.CorrelationId;
 using ChoreographyKata.Database;
 using ChoreographyKata.Logging;
@@ -22,7 +22,7 @@ public static class ServiceRegistration
         RegisterDatabase(services);
         RegisterSupport(services);
         RegisterEventGrid(services);
-        RegisterTheaterServices(services);
+        RegisterDomainServices(services);
         RegisterControlTower(services);
     }
     private static void RegisterDatabase(IServiceCollection services)
@@ -43,15 +43,16 @@ public static class ServiceRegistration
 
     private static void RegisterSupport(IServiceCollection services)
     {
-        services.AddTransient<ILogging, TheaterLogger>();
+        services.AddTransient<ILogging, ConsoleLogger>();
         services.AddTransient<ICalendar, LocalCalendar>();
         services.AddTransient<ICorrelationIdFactory, CorrelationIdFactory>();
     }
 
-    private static void RegisterTheaterServices(IServiceCollection services)
+    private static void RegisterDomainServices(IServiceCollection services)
     {
         services.AddTransient<BookingService>();
         services.AddSingleton<IListener, InventoryService>();
+        services.AddConfiguration<InventoryConfiguration>(InventoryConfiguration.SectionKey);
         services.AddTransient<InventoryService>();
         services.AddTransient<IListener, TicketingService>();
         services.AddTransient<TicketingService>();
@@ -61,7 +62,7 @@ public static class ServiceRegistration
 
     private static void RegisterControlTower(IServiceCollection services)
     {
-        services.AddTransient<ITheaterEvents, DbTheaterEvents>();
+        services.AddTransient<IEventLog, DbEventLog>();
         services.AddConfiguration<ControlTowerConfiguration>(ControlTowerConfiguration.SectionKey);
         services.AddTransient<ValidationRule>();
         services.AddTransient<ControlTowerService>();

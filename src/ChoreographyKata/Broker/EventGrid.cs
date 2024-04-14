@@ -14,17 +14,19 @@ public sealed class EventGrid : IMessageBus
         _configuration = options.Value;
     }
 
-    public async Task SendAsync(TheaterEvent theaterEvent)
+    //Subscription is made at cloud resource
+
+    public async Task Publish(DomainEvent domainEvent)
     {
         var client = new EventGridPublisherClient(
             new Uri(_configuration.Endpoint),
             new AzureKeyCredential(_configuration.AccessKey));
 
         var egEvent = new EventGridEvent(
-                theaterEvent.Name,
-                nameof(TheaterEvent),
+                domainEvent.Name,
+                nameof(DomainEvent),
                 _configuration.Version,
-                theaterEvent);
+                domainEvent);
 
         await client.SendEventAsync(egEvent);
     }

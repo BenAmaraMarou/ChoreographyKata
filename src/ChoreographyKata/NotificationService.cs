@@ -11,20 +11,18 @@ public sealed class NotificationService : IListener
         _logging = logging;
     }
 
-    public Task OnMessageAsync(TheaterEvent theaterEvent)
+    public Task OnMessageAsync(DomainEvent domainEvent)
     {
-        if (theaterEvent.Name != TheaterEvents.CapacityExceeded)
+        if (domainEvent.Name == DomainEventCatalog.CapacityExceeded)
         {
-            return Task.CompletedTask;
+            NotifyFailure(domainEvent.Value);
         }
-
-        NotifyFailure(theaterEvent.Value);
 
         return Task.CompletedTask;
     }
 
     private void NotifyFailure(int numberOfSeats)
     {
-        _logging.Log($"FailureNotified {numberOfSeats}");
+        _logging.Log($"{DomainEventCatalog.NotificationSent} {numberOfSeats}");
     }
 }

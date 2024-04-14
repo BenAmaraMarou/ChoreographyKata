@@ -2,7 +2,7 @@ namespace ChoreographyKata.Logging;
 
 public interface ILogging
 {
-    void Log(TheaterEvent theaterEvent);
+    void Log(DomainEvent domainEvent);
 
     void Log(string message);
 }

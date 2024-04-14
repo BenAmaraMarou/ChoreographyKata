@@ -15,6 +15,8 @@ public sealed class NotificationFunction
     [Function(nameof(Notify))]
     public async Task Notify([EventGridTrigger] CloudEvent cloudEvent)
     {
-        await _notificationService.OnMessageAsync(cloudEvent.Data!.ToObjectFromJson<TheaterEvent>());
+        var domainEvent = cloudEvent.Data!.ToObjectFromJson<DomainEvent>();
+
+        await _notificationService.OnMessageAsync(domainEvent);
     }
 }

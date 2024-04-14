@@ -1,4 +1,5 @@
 using ChoreographyKata.ControlTower.Configuration;
+using ChoreographyKata.ControlTower.EventLog;
 using Microsoft.Extensions.Options;
 
 namespace ChoreographyKata.ControlTower;
@@ -7,13 +8,13 @@ public sealed class ValidationRule
 {
     private static readonly IEnumerable<string> SuccessfulBookingEvents = new[]
     {
-        TheaterEvents.BookingReserved,
-        TheaterEvents.CapacityReserved,
+        DomainEventCatalog.BookingRequested,
+        DomainEventCatalog.InventoryReserved,
     };
     private static readonly IEnumerable<string> FailedBookingEvents = new[]
     {
-        TheaterEvents.BookingReserved,
-        TheaterEvents.CapacityExceeded
+        DomainEventCatalog.BookingRequested,
+        DomainEventCatalog.CapacityExceeded
     };
     private static readonly IEnumerable<IEnumerable<string>> RequiredEventsByGroup = new[]
     {
@@ -22,31 +23,30 @@ public sealed class ValidationRule
     };
     private readonly TimeSpan _timeout;
 
-    public ValidationRule(IOptions<ControlTowerConfiguration> options)
-    {
+    public ValidationRule(IOptions<ControlTowerConfiguration> options) => 
         _timeout = TimeSpan.FromMinutes(options.Value.TimeoutMinutes);
-    }
 
-    internal bool AreValid(IDictionary<TheaterEvent, DateTime> theaterEvents, DateTime executionDate)
+    internal bool AreValid(IReadOnlyCollection<TimestampedDomainEvent> domainEvents, DateTime executionDate)
     {
-        if (AreAllRequiredEventsPresent(theaterEvents.Keys))
+        if (AreAllRequiredEventsPresent(domainEvents))
         {
             return true;
         }
 
-        return AreEventsBeforeTimeOut(theaterEvents.Values, executionDate);
+        return AreEventBeforeDeadline(domainEvents, executionDate);
     }
 
-    private static bool AreAllRequiredEventsPresent(IEnumerable<TheaterEvent> theaterEvents) => 
-        RequiredEventsByGroup.Any(required => AreEqual(required, theaterEvents.Select(t => t.Name)));
+    private static bool AreAllRequiredEventsPresent(IEnumerable<DomainEvent> domainEvents) => 
+        RequiredEventsByGroup.Any(requiredEvent => AreEqual(requiredEvent, domainEvents.Select(t => t.Name)));
 
     private static bool AreEqual(IEnumerable<string> events1, IEnumerable<string> events2) =>
         events1.OrderBy(_=>_).SequenceEqual(events2.OrderBy(_ => _));
 
-    private bool AreEventsBeforeTimeOut(IEnumerable<DateTime> dates, DateTime executionDate)
+    private bool AreEventBeforeDeadline(IEnumerable<TimestampedDomainEvent> events, DateTime executionDate)
     {
-        var timeoutDate = dates.Max().Add(_timeout);
+        var initialEventTime = events.MinBy(e=>e.Date)!.Date;
+        var deadline = initialEventTime.Add(_timeout);
 
-        return timeoutDate > executionDate;
+        return executionDate < deadline;
     }
 }

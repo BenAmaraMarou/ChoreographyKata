@@ -2,5 +2,5 @@ namespace ChoreographyKata.Broker;
 
 public interface IMessageBus
 {
-    Task SendAsync(TheaterEvent theaterEvent);
+    Task Publish(DomainEvent domainEvent);
 }

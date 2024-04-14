@@ -1,6 +1,6 @@
 ﻿namespace ChoreographyKata.Database;
 
-public sealed record TheaterEventEntity
+public sealed record DomainEventEntity
 {
     public int Id { get; set; }
 

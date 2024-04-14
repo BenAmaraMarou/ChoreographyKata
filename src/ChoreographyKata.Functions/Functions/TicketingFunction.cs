@@ -15,6 +15,8 @@ public sealed class TicketingFunction
     [Function(nameof(PrintTicket))]
     public async Task PrintTicket([EventGridTrigger] CloudEvent cloudEvent)
     {
-        await _ticketingService.OnMessageAsync(cloudEvent.Data!.ToObjectFromJson<TheaterEvent>());
+        var domainEvent = cloudEvent.Data!.ToObjectFromJson<DomainEvent>();
+
+        await _ticketingService.OnMessageAsync(domainEvent);
     }
 }

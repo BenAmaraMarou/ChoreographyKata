@@ -8,5 +8,5 @@ public sealed class ChoreographyKataDbContext : DbContext
     {
     }
 
-    public DbSet<TheaterEventEntity> TheaterEvents => Set<TheaterEventEntity>();
+    public DbSet<DomainEventEntity> DomainEvents => Set<DomainEventEntity>();
 }
