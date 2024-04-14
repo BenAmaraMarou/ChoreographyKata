@@ -16,9 +16,11 @@ public sealed class BookingFunction
     }
 
     [Function(nameof(BookSeats))]
-    public void BookSeats([HttpTrigger(AuthorizationLevel.Function, "post", Route = "book/{numberOfSeats}")] HttpRequest req, int numberOfSeats)
+    public void BookSeats(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "book/{numberOfSeats}")] HttpRequest req,
+        int numberOfSeats)
     {
-        _logger.LogInformation("Booking called");
+        _logger.LogInformation("{functionName} {numberOfSeats} called.", nameof(BookSeats), numberOfSeats);
         _bookingService.Book(numberOfSeats);
     }
 }
