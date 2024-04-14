@@ -1,4 +1,5 @@
 using Azure.Messaging;
+using ChoreographyKata.ControlTower;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -30,4 +31,8 @@ public sealed class ControlTowerFunction
 
         _controlTowerService.OnMessage(cloudEvent.Data.ToObjectFromJson<TheaterEvent>());
     }
+
+    [Function(nameof(Inspect))]
+    public void Inspect([TimerTrigger("0 2 * * * *")] TimerInfo myTimer) =>
+        _controlTowerService.InspectErrors();
 }

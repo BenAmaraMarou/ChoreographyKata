@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Azure.Messaging.EventGrid;
+using ChoreographyKata.Broker.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ChoreographyKata.Broker;

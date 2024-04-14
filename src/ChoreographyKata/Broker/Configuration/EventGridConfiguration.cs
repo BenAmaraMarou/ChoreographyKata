@@ -1,4 +1,4 @@
-namespace ChoreographyKata.Broker;
+namespace ChoreographyKata.Broker.Configuration;
 
 public sealed record EventGridConfiguration
 {

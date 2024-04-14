@@ -44,6 +44,7 @@ public sealed record InventoryService : IListener
         _messageBus.SendAsync(capacityReserved);
         _logging.Log(capacityReserved);
     }
+
     private void CapacityExceeded(TheaterEvent theaterEvent)
     {
         var capacityExceeded = theaterEvent with { Name = TheaterEvents.CapacityExceeded };
