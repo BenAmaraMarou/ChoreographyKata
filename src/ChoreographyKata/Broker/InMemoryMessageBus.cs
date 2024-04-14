@@ -9,13 +9,11 @@ public sealed record InMemoryMessageBus : IMessageBus
         _listeners.Add(listener);
     }
 
-    public Task SendAsync(TheaterEvent theaterEvent)
+    public async Task SendAsync(TheaterEvent theaterEvent)
     {
         foreach (var listener in _listeners)
         {
-            listener.OnMessage(theaterEvent);
+            await listener.OnMessageAsync(theaterEvent);
         }
-
-        return Task.CompletedTask;
     }
 }

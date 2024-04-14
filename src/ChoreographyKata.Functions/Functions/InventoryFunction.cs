@@ -3,34 +3,32 @@
 
 using Azure.Messaging;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
+using ChoreographyKata.Logging;
+
 
 namespace ChoreographyKata.Functions.Functions;
 
 public sealed class InventoryFunction
 {
-    private readonly ILogger<InventoryFunction> _logger;
+    private readonly ILogging _logger;
     private readonly InventoryService _inventoryService;
 
-    public InventoryFunction(ILogger<InventoryFunction> logger, InventoryService inventoryService)
+    public InventoryFunction(ILogging logger, InventoryService inventoryService)
     {
         _logger = logger;
         _inventoryService = inventoryService;
     }
 
     [Function(nameof(DecreaseCapacity))]
-    public void DecreaseCapacity([EventGridTrigger] CloudEvent cloudEvent)
+    public async Task DecreaseCapacity([EventGridTrigger] CloudEvent cloudEvent)
     {
-        _logger.LogInformation("{functionName} called on event type {eventType}, subject {eventSubject}.",
-            nameof(DecreaseCapacity),
-            cloudEvent.Type,
-            cloudEvent.Subject);
+        _logger.Log($"{nameof(DecreaseCapacity)} called on event type {cloudEvent.Type}, subject {cloudEvent.Subject}.");
 
         if (cloudEvent.Data == null)
         {
             return;
         }
 
-        _inventoryService.OnMessage(cloudEvent.Data.ToObjectFromJson<TheaterEvent>());
+        await _inventoryService.OnMessageAsync(cloudEvent.Data.ToObjectFromJson<TheaterEvent>());
     }
 }

@@ -1,4 +1,4 @@
-using Azure.Identity;
+using Azure;
 using Azure.Messaging.EventGrid;
 using ChoreographyKata.Broker.Configuration;
 using Microsoft.Extensions.Options;
@@ -22,15 +22,14 @@ public sealed class EventGrid : IMessageBus
     public async Task SendAsync(TheaterEvent theaterEvent)
     {
         var client = new EventGridPublisherClient(
-            new Uri(_configuration.TopicEndpoint),
-            new DefaultAzureCredential());
+            new Uri(_configuration.Endpoint),
+            new AzureKeyCredential(_configuration.AccessKey));
 
         var egEvent = new EventGridEvent(
                 theaterEvent.Name,
                 nameof(TheaterEvent),
                 _configuration.Version,
-                theaterEvent)
-            { Topic = _configuration.TopicName };
+                theaterEvent);
 
         await client.SendEventAsync(egEvent);
     }

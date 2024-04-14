@@ -11,7 +11,7 @@ public sealed class NotificationService : IListener
         _logging = logging;
     }
 
-    public Task OnMessage(TheaterEvent theaterEvent)
+    public Task OnMessageAsync(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.CapacityExceeded)
         {

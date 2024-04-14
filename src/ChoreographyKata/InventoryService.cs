@@ -18,7 +18,7 @@ public sealed record InventoryService : IListener
 
     public int AvailableSeats() => _capacity;
 
-    public Task OnMessage(TheaterEvent theaterEvent)
+    public Task OnMessageAsync(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.BookingReserved)
         {

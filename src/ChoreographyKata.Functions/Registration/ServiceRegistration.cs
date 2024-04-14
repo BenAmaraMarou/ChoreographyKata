@@ -20,12 +20,17 @@ public static class ServiceRegistration
 
     public static void Register(IServiceCollection services)
     {
-        services.AddDbContextFactory<ChoreographyKataDbContext>(ConfigureDb);
+        RegisterDatabase(services);
         services.AddTransient<ILogging, TheaterLogger>();
         services.AddTransient<ICalendar, LocalCalendar>();
         services.AddTransient<ICorrelationIdFactory, CorrelationIdFactory>();
-        services.AddConfiguration<EventGridConfiguration>(EventGridConfiguration.SectionKey);
-        services.AddSingleton<IMessageBus, EventGrid>();
+        RegisterEventGrid(services);
+        RegisterTheaterServices(services);
+        RegisterControlTower(services);
+    }
+
+    private static void RegisterTheaterServices(IServiceCollection services)
+    {
         services.AddTransient<BookingService>();
         services.AddSingleton<IListener>(p =>
         {
@@ -36,11 +41,28 @@ public static class ServiceRegistration
             return new InventoryService(bus, logger, capacity);
         });
         services.AddTransient<IListener, TicketingService>();
+        services.AddTransient<TicketingService>();
         services.AddTransient<IListener, NotificationService>();
+        services.AddTransient<NotificationService>();
+    }
+
+    private static void RegisterControlTower(IServiceCollection services)
+    {
         services.AddTransient<ITheaterEvents, DbTheaterEvents>();
         services.AddConfiguration<ControlTowerConfiguration>(ControlTowerConfiguration.SectionKey);
         services.AddTransient<ValidationRule>();
         services.AddTransient<ControlTowerService>();
+    }
+
+    private static void RegisterDatabase(IServiceCollection services)
+    {
+        services.AddDbContextFactory<ChoreographyKataDbContext>(ConfigureDb);
+    }
+
+    private static void RegisterEventGrid(IServiceCollection services)
+    {
+        services.AddConfiguration<EventGridConfiguration>(EventGridConfiguration.SectionKey);
+        services.AddSingleton<IMessageBus, EventGrid>();
     }
 
     private static void ConfigureDb(IServiceProvider provider, DbContextOptionsBuilder dbContextBuilder)

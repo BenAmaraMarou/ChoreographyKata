@@ -11,7 +11,7 @@ public sealed class TicketingService : IListener
         _logging = logging;
     }
 
-    public Task OnMessage(TheaterEvent theaterEvent)
+    public Task OnMessageAsync(TheaterEvent theaterEvent)
     {
         if (theaterEvent.Name != TheaterEvents.CapacityReserved)
         {

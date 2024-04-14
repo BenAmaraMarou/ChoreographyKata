@@ -22,7 +22,7 @@ public sealed class ControlTowerService : IListener
         _validationRule = validationRule;
     }
 
-    public async Task OnMessage(TheaterEvent theaterEvent)
+    public async Task OnMessageAsync(TheaterEvent theaterEvent)
     {
         _logging.Log($"{nameof(ControlTowerService)} captured: {theaterEvent}.");
         await _theaterEvents.AddAsync(theaterEvent, _calendar.Now());
@@ -30,9 +30,9 @@ public sealed class ControlTowerService : IListener
 
     public async Task<IEnumerable<TheaterEvent>> CapturedEventsAsync() => (await _theaterEvents.GetAsync()).Keys;
 
-    public void InspectErrors()
+    public async Task InspectErrorsAsync()
     {
-        var koCorrelationIds = GetKoCorrelationIdsAsync();
+        var koCorrelationIds = await GetKoCorrelationIdsAsync();
         _logging.Log($"KO Correlation Ids: [{string.Join(Separator, koCorrelationIds)}");
     }
 

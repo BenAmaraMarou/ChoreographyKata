@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChoreographyKata", "Choreog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChoreographyKata.Tests", "ChoreographyKata.Tests\ChoreographyKata.Tests.csproj", "{7A715733-A84C-4CE2-9A91-1BE9A11C4306}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoreographyKata.Functions", "ChoreographyKata.Functions\ChoreographyKata.Functions.csproj", "{E767A472-D996-4149-A0BF-AC76135D6409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChoreographyKata.Functions", "ChoreographyKata.Functions\ChoreographyKata.Functions.csproj", "{E767A472-D996-4149-A0BF-AC76135D6409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
