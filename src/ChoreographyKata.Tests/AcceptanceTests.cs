@@ -34,7 +34,7 @@ public class AcceptanceTests
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
-        var inventory = new InventoryService(messageBus, _logging, 10);
+        var inventory = new InventoryService(messageBus, _logging, Capacity(10));
         var ticketing = new TicketingService(_logging);
         var notification = new NotificationService(_logging);
         messageBus.Subscribe(inventory);
@@ -51,7 +51,7 @@ public class AcceptanceTests
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
-        var inventory = new InventoryService(messageBus, _logging, 10);
+        var inventory = new InventoryService(messageBus, _logging, Capacity(10));
         var ticketing = new TicketingService(_logging);
         var notification = new NotificationService(_logging);
         messageBus.Subscribe(inventory);
@@ -68,7 +68,7 @@ public class AcceptanceTests
     {
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
-        var inventory = new InventoryService(messageBus, _logging, 10);
+        var inventory = new InventoryService(messageBus, _logging, Capacity(10));
         var ticketing = new TicketingService(_logging);
         var notification = new NotificationService(_logging);
         var controlTower = new ControlTowerService(new InMemoryTheaterEvents(), _calendar, _logging, new ValidationRule(ControlTowerConfig));
@@ -118,4 +118,7 @@ public class AcceptanceTests
             CorrelationId1
         });
     }
+
+    private static IOptions<InventoryConfiguration> Capacity(int capacity) =>
+        new InventoryConfiguration { Capacity = capacity }.CreateOptions();
 }

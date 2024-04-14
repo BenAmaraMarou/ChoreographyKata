@@ -1,17 +1,16 @@
 using ChoreographyKata.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 
 namespace ChoreographyKata.Functions.Functions;
 
 public sealed class BookingFunction
 {
-    private readonly ILogging _logger;
     private readonly BookingService _bookingService;
 
-    public BookingFunction(ILogging logger, BookingService bookingService)
+    public BookingFunction(BookingService bookingService)
     {
-        _logger = logger;
         _bookingService = bookingService;
     }
 
@@ -20,7 +19,6 @@ public sealed class BookingFunction
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "book/{numberOfSeats}")] HttpRequest req,
         int numberOfSeats)
     {
-        _logger.Log($"{nameof(BookSeats)} {numberOfSeats} called.");
         await _bookingService.BookAsync(numberOfSeats);
     }
 }

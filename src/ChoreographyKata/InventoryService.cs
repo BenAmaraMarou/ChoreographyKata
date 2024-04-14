@@ -1,5 +1,6 @@
 using ChoreographyKata.Broker;
 using ChoreographyKata.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ChoreographyKata;
 
@@ -9,11 +10,11 @@ public sealed record InventoryService : IListener
     private readonly ILogging _logging;
     private int _capacity;
 
-    public InventoryService(IMessageBus messageBus, ILogging logging, int capacity)
+    public InventoryService(IMessageBus messageBus, ILogging logging, IOptions<InventoryConfiguration> options)
     {
         _messageBus = messageBus;
         _logging = logging;
-        _capacity = capacity;
+        _capacity = options.Value.Capacity;
     }
 
     public int AvailableSeats() => _capacity;

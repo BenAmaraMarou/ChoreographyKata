@@ -10,11 +10,11 @@ public sealed class ControlTowerService : IListener
     private readonly ICalendar _calendar;
     private readonly ILogging _logging;
     private readonly ValidationRule _validationRule;
-    private const string Separator = ", ";
 
     public ControlTowerService(ITheaterEvents theaterEvents,
         ICalendar calendar,
-        ILogging logging, ValidationRule validationRule)
+        ILogging logging, 
+        ValidationRule validationRule)
     {
         _theaterEvents = theaterEvents;
         _calendar = calendar;
@@ -33,7 +33,7 @@ public sealed class ControlTowerService : IListener
     public async Task InspectErrorsAsync()
     {
         var koCorrelationIds = await GetKoCorrelationIdsAsync();
-        _logging.Log($"KO Correlation Ids: [{string.Join(Separator, koCorrelationIds)}");
+        _logging.Log($"KO Correlation Ids: [{string.Join(", ", koCorrelationIds)}");
     }
 
     public async Task<IEnumerable<Guid>> GetKoCorrelationIdsAsync() =>

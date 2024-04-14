@@ -14,11 +14,6 @@ public sealed class EventGrid : IMessageBus
         _configuration = options.Value;
     }
 
-    public void Subscribe(IListener listener)
-    {
-        //TODO not required
-    }
-
     public async Task SendAsync(TheaterEvent theaterEvent)
     {
         var client = new EventGridPublisherClient(
