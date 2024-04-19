@@ -14,7 +14,7 @@ public sealed class BookingFunction
 
     [Function(nameof(RequestBooking))]
     public async Task RequestBooking(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "book/{numberOfSeats}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "request-booking/{numberOfSeats}")] HttpRequest req,
         int numberOfSeats)
     {
         await _bookingService.RequestBookingAsync(numberOfSeats);

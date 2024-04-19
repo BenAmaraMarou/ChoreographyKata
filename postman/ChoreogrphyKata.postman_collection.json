@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "de7266cb-b971-4e73-980b-dca72c4c78cc",
+		"name": "ChoreogrphyKata",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34263897"
+	},
+	"item": [
+		{
+			"name": "RequestBooking",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{functionAppApiKey}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "x-functions-key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{functionAppBaseUrl}}request-booking/3",
+					"host": [
+						"{{functionAppBaseUrl}}request-booking"
+					],
+					"path": [
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
