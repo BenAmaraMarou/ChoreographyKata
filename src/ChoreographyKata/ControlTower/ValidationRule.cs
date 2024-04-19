@@ -1,5 +1,5 @@
 using ChoreographyKata.ControlTower.Configuration;
-using ChoreographyKata.ControlTower.EventLog;
+using ChoreographyKata.EventLogs;
 using Microsoft.Extensions.Options;
 
 namespace ChoreographyKata.ControlTower;

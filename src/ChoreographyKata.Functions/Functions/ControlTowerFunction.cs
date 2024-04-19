@@ -1,4 +1,3 @@
-using Azure.Messaging;
 using ChoreographyKata.ControlTower;
 using Microsoft.Azure.Functions.Worker;
 
@@ -11,14 +10,6 @@ public sealed class ControlTowerFunction
     public ControlTowerFunction(ControlTowerService controlTowerService)
     {
         _controlTowerService = controlTowerService;
-    }
-
-    [Function(nameof(Capture))]
-    public async Task Capture([EventGridTrigger] CloudEvent cloudEvent)
-    {
-        var domainEvent = cloudEvent.Data!.ToObjectFromJson<DomainEvent>();
-
-        await _controlTowerService.OnMessageAsync(domainEvent);
     }
 
     [Function(nameof(Inspect))]

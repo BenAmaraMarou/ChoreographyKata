@@ -1,4 +1,4 @@
-namespace ChoreographyKata.ControlTower.EventLog;
+namespace ChoreographyKata.EventLogs;
 
 public sealed record InMemoryEventLog : IEventLog
 {
@@ -7,6 +7,6 @@ public sealed record InMemoryEventLog : IEventLog
     public Task AppendAsync(TimestampedDomainEvent domainEvent) =>
         Task.FromResult(_events.Add(domainEvent));
 
-    public Task<IReadOnlyCollection<TimestampedDomainEvent>> GetAsync() => 
+    public Task<IReadOnlyCollection<TimestampedDomainEvent>> GetAsync() =>
         Task.FromResult<IReadOnlyCollection<TimestampedDomainEvent>>(_events);
 }

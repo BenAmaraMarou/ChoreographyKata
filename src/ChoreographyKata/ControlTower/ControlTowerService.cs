@@ -1,10 +1,10 @@
 using ChoreographyKata.Calendar;
-using ChoreographyKata.ControlTower.EventLog;
+using ChoreographyKata.EventLogs;
 using ChoreographyKata.Logging;
 
 namespace ChoreographyKata.ControlTower;
 
-public sealed class ControlTowerService : IListener
+public sealed class ControlTowerService
 {
     private readonly IEventLog _eventLog;
     private readonly ICalendar _calendar;
@@ -22,19 +22,6 @@ public sealed class ControlTowerService : IListener
         _validationRule = validationRule;
     }
 
-    public async Task OnMessageAsync(DomainEvent domainEvent)
-    {
-        var now = _calendar.Now();
-        var timestampedDomainEvent = new TimestampedDomainEvent(domainEvent.CorrelationId, 
-            domainEvent.Name,
-            domainEvent.Value, 
-            now);
-
-        await _eventLog.AppendAsync(timestampedDomainEvent);
-    }
-
-    public async Task<IEnumerable<DomainEvent>> CapturedEventsAsync() => await _eventLog.GetAsync();
-
     public async Task InspectErrorsAsync()
     {
         var koCorrelationIds = await GetKoCorrelationIdsAsync();
@@ -46,12 +33,11 @@ public sealed class ControlTowerService : IListener
     {
         var now = _calendar.Now();
         
-        //TODO limit ObservationPeriod to past 2 days
+        //TODO limit ObservationPeriod to past 2 days (for instance)
 
         return (await _eventLog.GetAsync())
             .GroupBy(t => t.CorrelationId)
             .Where(eventsByCorrelationId => !_validationRule.AreValid(eventsByCorrelationId.ToList(), now))
             .Select(eventsByCorrelationId => eventsByCorrelationId.Key);
     }
-
 }

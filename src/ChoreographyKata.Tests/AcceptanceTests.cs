@@ -7,7 +7,7 @@ using NSubstitute;
 using System.Globalization;
 using ChoreographyKata.ControlTower;
 using ChoreographyKata.ControlTower.Configuration;
-using ChoreographyKata.ControlTower.EventLog;
+using ChoreographyKata.EventLogs;
 using Microsoft.Extensions.Options;
 
 namespace ChoreographyKata.Tests;
@@ -32,6 +32,7 @@ public sealed class AcceptanceTests
     [Test]
     public async Task SuccessfulBooking()
     {
+        // Arrange
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
         var inventory = new InventoryService(messageBus, _logging, Capacity(10));
@@ -41,14 +42,17 @@ public sealed class AcceptanceTests
         messageBus.Subscribe(ticketing);
         messageBus.Subscribe(notification);
 
+        // Act
         await booking.RequestBookingAsync(3);
 
+        // Assert
         inventory.AvailableSeats().Should().Be(7);
     }
 
     [Test]
-    public async Task FailingBooking()
+    public async Task FailedBooking()
     {
+        // Arrange
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
         var inventory = new InventoryService(messageBus, _logging, Capacity(10));
@@ -58,33 +62,41 @@ public sealed class AcceptanceTests
         messageBus.Subscribe(ticketing);
         messageBus.Subscribe(notification);
 
+        // Act
         await booking.RequestBookingAsync(11);
 
+        // Assert
         inventory.AvailableSeats().Should().Be(10);
     }
     
     [Test]
     public async Task SuccessfulInspection()
     {
+        // Arrange
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
         var inventory = new InventoryService(messageBus, _logging, Capacity(10));
         var ticketing = new TicketingService(_logging);
         var notification = new NotificationService(_logging);
-        var controlTower = new ControlTowerService(new InMemoryEventLog(), _calendar, _logging, new ValidationRule(ControlTowerConfig));
+        var eventLog = new InMemoryEventLog();
+        var captureEvents = new CaptureEventsService(eventLog, _calendar, _logging);
+        var controlTower = new ControlTowerService(eventLog, _calendar, _logging, new ValidationRule(ControlTowerConfig));
         messageBus.Subscribe(inventory);
         messageBus.Subscribe(ticketing);
         messageBus.Subscribe(notification);
-        messageBus.Subscribe(controlTower);
+        messageBus.Subscribe(captureEvents);
         _calendar.Now().Returns(Date1);
 
+        // Act
         await booking.RequestBookingAsync(3);
         await booking.RequestBookingAsync(11);
 
-        (await controlTower.CapturedEventsAsync()).Should().BeEquivalentTo(new[]
+        // Assert
+        (await captureEvents.CapturedEventsAsync()).Should().BeEquivalentTo(new[]
         {
             new DomainEvent(CorrelationId1, DomainEventCatalog.BookingRequested, 3),
             new DomainEvent(CorrelationId1, DomainEventCatalog.InventoryReserved, 3),
+            new DomainEvent(CorrelationId1, DomainEventCatalog.InventoryUpdated, 3),
             new DomainEvent(CorrelationId2, DomainEventCatalog.BookingRequested, 11),
             new DomainEvent(CorrelationId2, DomainEventCatalog.CapacityExceeded, 11)
         });
@@ -94,22 +106,27 @@ public sealed class AcceptanceTests
     [Test]
     public async Task FailedInspection()
     {
+        // Arrange
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
-        var inventory = Substitute.For<IListener>();
+        var outOfServiceInventory = Substitute.For<IListener>();
         var ticketing = new TicketingService(_logging);
         var notification = new NotificationService(_logging);
-        var controlTower = new ControlTowerService(new InMemoryEventLog(), _calendar, _logging, new ValidationRule(ControlTowerConfig));
-        messageBus.Subscribe(inventory);
+        var eventLog = new InMemoryEventLog();
+        var captureEvents = new CaptureEventsService(eventLog, _calendar, _logging);
+        var controlTower = new ControlTowerService(eventLog, _calendar, _logging, new ValidationRule(ControlTowerConfig));
+        messageBus.Subscribe(outOfServiceInventory);
         messageBus.Subscribe(ticketing);
         messageBus.Subscribe(notification);
-        messageBus.Subscribe(controlTower);
+        messageBus.Subscribe(captureEvents);
         _calendar.Now().Returns(Date1);
 
+        // Act
         await booking.RequestBookingAsync(3);
-
         _calendar.Now().Returns(Date2);
-        (await controlTower.CapturedEventsAsync()).Should().BeEquivalentTo(new[]
+
+        // Assert
+        (await captureEvents.CapturedEventsAsync()).Should().BeEquivalentTo(new[]
         {
             new DomainEvent(CorrelationId1, DomainEventCatalog.BookingRequested, 3),
         });

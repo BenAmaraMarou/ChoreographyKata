@@ -1,7 +1,7 @@
 using ChoreographyKata.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChoreographyKata.ControlTower.EventLog;
+namespace ChoreographyKata.EventLogs;
 
 public sealed class DbEventLog : IEventLog
 {
@@ -22,7 +22,7 @@ public sealed class DbEventLog : IEventLog
             Value = domainEvent.Value,
             Date = domainEvent.Date,
         });
-       await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task<IReadOnlyCollection<TimestampedDomainEvent>> GetAsync()
@@ -32,6 +32,6 @@ public sealed class DbEventLog : IEventLog
         return (await dbContext.DomainEvents.ToListAsync()).Select(CreateEvent).ToList();
     }
 
-    private static TimestampedDomainEvent CreateEvent(DomainEventEntity e) 
+    private static TimestampedDomainEvent CreateEvent(DomainEventEntity e)
         => new(e.CorrelationId, e.Name, e.Value, e.Date);
 }

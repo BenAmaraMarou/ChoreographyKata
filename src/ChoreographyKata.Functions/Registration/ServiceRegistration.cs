@@ -3,9 +3,9 @@ using ChoreographyKata.Broker.Configuration;
 using ChoreographyKata.Calendar;
 using ChoreographyKata.ControlTower;
 using ChoreographyKata.ControlTower.Configuration;
-using ChoreographyKata.ControlTower.EventLog;
 using ChoreographyKata.CorrelationId;
 using ChoreographyKata.Database;
+using ChoreographyKata.EventLogs;
 using ChoreographyKata.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +24,9 @@ public static class ServiceRegistration
         RegisterEventGrid(services);
         RegisterDomainServices(services);
         RegisterControlTower(services);
+        RegisterCaptureEvents(services);
     }
+
     private static void RegisterDatabase(IServiceCollection services)
     {
         services.AddDbContextFactory<ChoreographyKataDbContext>((provider, builder) =>
@@ -66,5 +68,10 @@ public static class ServiceRegistration
         services.AddConfiguration<ControlTowerConfiguration>(ControlTowerConfiguration.SectionKey);
         services.AddTransient<ValidationRule>();
         services.AddTransient<ControlTowerService>();
+    }
+
+    private static void RegisterCaptureEvents(IServiceCollection services)
+    {
+        services.AddTransient<CaptureEventsService>();
     }
 }

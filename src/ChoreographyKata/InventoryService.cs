@@ -34,8 +34,8 @@ public sealed record InventoryService : IListener
         if (_capacity >= domainEvent.Value)
         {
             DecrementCapacity(domainEvent);
-            PublishInventoryUpdated(domainEvent);
             PublishInventoryReserved(domainEvent);
+            PublishInventoryUpdated(domainEvent);
         }
         else
         {

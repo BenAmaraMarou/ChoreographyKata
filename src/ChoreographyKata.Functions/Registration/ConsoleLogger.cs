@@ -12,8 +12,9 @@ public sealed class ConsoleLogger : ILogging
         _logger = logger;
     }
 
-    public void Log(DomainEvent domainEvent) => 
-        _logger.LogInformation(domainEvent.ToString());
+    public void Log<TDomainEvent>(TDomainEvent domainEvent) 
+        where TDomainEvent : DomainEvent
+        => _logger.LogInformation(domainEvent.ToString());
 
     public void Log(string message) => 
         _logger.LogInformation(message);

@@ -1,4 +1,4 @@
-namespace ChoreographyKata.ControlTower.EventLog;
+namespace ChoreographyKata.EventLogs;
 
 public interface IEventLog
 {
