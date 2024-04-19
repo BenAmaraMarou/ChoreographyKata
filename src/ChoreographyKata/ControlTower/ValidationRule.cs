@@ -10,11 +10,14 @@ public sealed class ValidationRule
     {
         DomainEventCatalog.BookingRequested,
         DomainEventCatalog.InventoryReserved,
+        DomainEventCatalog.InventoryUpdated,
+        DomainEventCatalog.TicketPrinted
     };
     private static readonly IEnumerable<string> FailedBookingEvents = new[]
     {
         DomainEventCatalog.BookingRequested,
-        DomainEventCatalog.CapacityExceeded
+        DomainEventCatalog.CapacityExceeded,
+        DomainEventCatalog.NotificationSent
     };
     private static readonly IEnumerable<IEnumerable<string>> RequiredEventsByGroup = new[]
     {

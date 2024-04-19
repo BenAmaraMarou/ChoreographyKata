@@ -1,4 +1,5 @@
 using ChoreographyKata.Broker;
+using ChoreographyKata.Configuration;
 using ChoreographyKata.Logging;
 using Microsoft.Extensions.Options;
 

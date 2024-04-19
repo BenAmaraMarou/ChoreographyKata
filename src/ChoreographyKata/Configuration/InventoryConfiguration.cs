@@ -1,4 +1,4 @@
-namespace ChoreographyKata;
+namespace ChoreographyKata.Configuration;
 
 public sealed record InventoryConfiguration
 {

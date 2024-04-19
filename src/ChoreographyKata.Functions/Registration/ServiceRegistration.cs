@@ -1,6 +1,7 @@
 using ChoreographyKata.Broker;
 using ChoreographyKata.Broker.Configuration;
 using ChoreographyKata.Calendar;
+using ChoreographyKata.Configuration;
 using ChoreographyKata.ControlTower;
 using ChoreographyKata.ControlTower.Configuration;
 using ChoreographyKata.CorrelationId;

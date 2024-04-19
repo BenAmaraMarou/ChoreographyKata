@@ -9,6 +9,7 @@ using ChoreographyKata.ControlTower;
 using ChoreographyKata.ControlTower.Configuration;
 using ChoreographyKata.EventLogs;
 using Microsoft.Extensions.Options;
+using ChoreographyKata.Configuration;
 
 namespace ChoreographyKata.Tests;
 
@@ -33,14 +34,14 @@ public sealed class AcceptanceTests
     public async Task SuccessfulBooking()
     {
         // Arrange
-        var messageBus = new InMemoryMessageBus();
-        var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
-        var inventory = new InventoryService(messageBus, _logging, Capacity(10));
-        var ticketing = new TicketingService(_logging);
-        var notification = new NotificationService(_logging);
-        messageBus.Subscribe(inventory);
-        messageBus.Subscribe(ticketing);
-        messageBus.Subscribe(notification);
+        var bus = new InMemoryMessageBus();
+        var booking = new BookingService(bus, _logging, _correlationIdFactory);
+        var inventory = new InventoryService(bus, _logging, Capacity(10));
+        var ticketing = new TicketingService(_logging, bus);
+        var notification = new NotificationService(_logging, bus);
+        bus.Subscribe(inventory);
+        bus.Subscribe(ticketing);
+        bus.Subscribe(notification);
 
         // Act
         await booking.RequestBookingAsync(3);
@@ -56,8 +57,8 @@ public sealed class AcceptanceTests
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
         var inventory = new InventoryService(messageBus, _logging, Capacity(10));
-        var ticketing = new TicketingService(_logging);
-        var notification = new NotificationService(_logging);
+        var ticketing = new TicketingService(_logging, messageBus);
+        var notification = new NotificationService(_logging, messageBus);
         messageBus.Subscribe(inventory);
         messageBus.Subscribe(ticketing);
         messageBus.Subscribe(notification);
@@ -76,8 +77,8 @@ public sealed class AcceptanceTests
         var messageBus = new InMemoryMessageBus();
         var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
         var inventory = new InventoryService(messageBus, _logging, Capacity(10));
-        var ticketing = new TicketingService(_logging);
-        var notification = new NotificationService(_logging);
+        var ticketing = new TicketingService(_logging, messageBus);
+        var notification = new NotificationService(_logging, messageBus);
         var eventLog = new InMemoryEventLog();
         var captureEvents = new CaptureEventsService(eventLog, _calendar, _logging);
         var controlTower = new ControlTowerService(eventLog, _calendar, _logging, new ValidationRule(ControlTowerConfig));
@@ -97,8 +98,10 @@ public sealed class AcceptanceTests
             new DomainEvent(CorrelationId1, DomainEventCatalog.BookingRequested, 3),
             new DomainEvent(CorrelationId1, DomainEventCatalog.InventoryReserved, 3),
             new DomainEvent(CorrelationId1, DomainEventCatalog.InventoryUpdated, 3),
+            new DomainEvent(CorrelationId1, DomainEventCatalog.TicketPrinted, 3),
             new DomainEvent(CorrelationId2, DomainEventCatalog.BookingRequested, 11),
-            new DomainEvent(CorrelationId2, DomainEventCatalog.CapacityExceeded, 11)
+            new DomainEvent(CorrelationId2, DomainEventCatalog.CapacityExceeded, 11),
+            new DomainEvent(CorrelationId2, DomainEventCatalog.NotificationSent, 11)
         });
         (await controlTower.GetKoCorrelationIdsAsync()).Should().BeEmpty();
     }
@@ -107,18 +110,18 @@ public sealed class AcceptanceTests
     public async Task FailedInspection()
     {
         // Arrange
-        var messageBus = new InMemoryMessageBus();
-        var booking = new BookingService(messageBus, _logging, _correlationIdFactory);
+        var bus = new InMemoryMessageBus();
+        var booking = new BookingService(bus, _logging, _correlationIdFactory);
         var outOfServiceInventory = Substitute.For<IListener>();
-        var ticketing = new TicketingService(_logging);
-        var notification = new NotificationService(_logging);
+        var ticketing = new TicketingService(_logging, bus);
+        var notification = new NotificationService(_logging, bus);
         var eventLog = new InMemoryEventLog();
         var captureEvents = new CaptureEventsService(eventLog, _calendar, _logging);
         var controlTower = new ControlTowerService(eventLog, _calendar, _logging, new ValidationRule(ControlTowerConfig));
-        messageBus.Subscribe(outOfServiceInventory);
-        messageBus.Subscribe(ticketing);
-        messageBus.Subscribe(notification);
-        messageBus.Subscribe(captureEvents);
+        bus.Subscribe(outOfServiceInventory);
+        bus.Subscribe(ticketing);
+        bus.Subscribe(notification);
+        bus.Subscribe(captureEvents);
         _calendar.Now().Returns(Date1);
 
         // Act
